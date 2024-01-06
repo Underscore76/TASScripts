@@ -1,0 +1,17 @@
+{
+  "Aliases": {},
+  "OverlayState": {
+    "Mouse": true,
+    "Hitbox": true,
+    "WeaponGuide": true,
+    "MinesLadder": true,
+    "Grid": false,
+    "timerpanel": true
+  },
+  "LogicState": {
+    "AcceptSleep": true,
+    "AnimationCancel": true,
+    "DialogueBoxTransition": true,
+    "ScreenFade": false
+  }
+}

@@ -1,0 +1,2 @@
+--- this is an example script to brute force a mines floor
+-- it will run until it finds a ladder, then it will go down it

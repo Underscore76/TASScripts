@@ -1,0 +1,43 @@
+{
+  "Aliases": {},
+  "OverlayState": {
+    "Clay": false,
+    "ClickableMenus": false,
+    "CropQuality": false,
+    "Debris": false,
+    "Mouse": true,
+    "DrawPath": true,
+    "Fishing": true,
+    "Hitbox": true,
+    "WeaponGuide": true,
+    "InfoPanel": true,
+    "MinesLadder": true,
+    "MixedSeed": true,
+    "MonsterDrop": true,
+    "MouseData": true,
+    "ObjectDrop": false,
+    "ObjectTiles": false,
+    "Sleep": false,
+    "Grid": true,
+    "TileHighlight": true,
+    "TimerPanel": true,
+    "Layers": false,
+    "WheatHay": false
+  },
+  "LogicState": {
+    "AcceptSleep": true,
+    "AdvanceFrozen": true,
+    "AnimationCancel": true,
+    "DialogueBox": true,
+    "DialogueBoxTransition": true,
+    "LevelUpMenu": true,
+    "ShippingMenu": true,
+    "SaveGame": true,
+    "ScreenFade": true,
+    "SkipEvent": false,
+    "GhostCancel": false,
+    "TakeStep": false,
+    "SwipePickup": false,
+    "WalkPath": true
+  }
+}

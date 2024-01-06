@@ -1,0 +1,10 @@
+*.py
+.vscode/
+.DS_Store
+SaveStates/
+Screenshots/
+*.zip
+*.txt
+*.md
+*.pptx
+*.xlsx
