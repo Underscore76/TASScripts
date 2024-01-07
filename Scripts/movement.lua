@@ -13,7 +13,7 @@ movement.DIR = {
 }
 
 
-local function ContainedRect(rect, tile)
+function movement.ContainedRect(rect, tile)
     local x = rect.X
     local y = rect.Y
     local w = rect.Width
@@ -21,6 +21,16 @@ local function ContainedRect(rect, tile)
     local tx = tile.X * 64
     local ty = tile.Y * 64
     return x > tx and x+w < tx+64 and y > ty and y+h < ty+64
+end
+
+function movement.ContainedRectCentered(rect, tile)
+    local x = rect.X
+    local y = rect.Y
+    local w = rect.Width
+    local h = rect.Height
+    local tx = tile.X * 64
+    local ty = tile.Y * 64
+    return x+4 > tx and x+w+12 < tx+64 and y-12 > ty and y+h+12 < ty+64
 end
 
 function movement.HalfHeight(vec, tile)
@@ -817,9 +827,9 @@ function movement.WalkCardinal(dir, frame_func, tfunc)
     local c = 0
     if tfunc == nil then
         if dir == movement.DIR.DOWN or dir == movement.DIR.UP then
-                tfunc = movement.CompareTileHeight
+            tfunc = movement.CompareTileHeight
         else
-                tfunc = movement.CompareTileWidth
+            tfunc = movement.CompareTileWidth
         end
     end
     local s = tfunc(Game1.player.position, moveTile)
@@ -860,12 +870,22 @@ function movement.WalkCardinal(dir, frame_func, tfunc)
     end
 end
 
-function movement.WalkToTile(tile, frame_func)
+function movement.WalkToTile(tile, frame_func, centered)
+    if centered == nil then
+        centered = false
+    end
     -- printf("walking to tile %d,%d", tile.X, tile.Y)
     Controller.pathFinder:Reset()
     Controller.pathFinder:Update(tile.X, tile.Y, false)
     local counter = 0
-    
+    local xfunc = movement.CompareTileWidth
+    local yfunc = movement.CompareTileHeight
+    local cfunc = movement.ContainedRect
+    if centered then
+        xfunc = movement.CenteredTileWidth
+        yfunc = movement.CenteredTileHeight
+        cfunc = movement.ContainedRectCentered
+    end
     while Controller.pathFinder.path.Count > 0 do
         -- print("walking")
         counter = counter + 1
@@ -882,48 +902,48 @@ function movement.WalkToTile(tile, frame_func)
             break
         end
         local moveTile = loc:toVector2()
-        if ContainedRect(Game1.player:GetBoundingBox(), moveTile) then
+        if cfunc(Game1.player:GetBoundingBox(), moveTile) then
             Controller.pathFinder:PopFront()
             goto continue
         end
         
         local speed = Game1.player:getMovementSpeed()
         local keyboard = {}
-        local xdir = movement.CompareTileWidth(Game1.player.Position, moveTile)
+        local xdir = xfunc(Game1.player.Position, moveTile)
         if xdir > 0 then
             table.insert(keyboard, Keys.D)
         elseif xdir < 0 then
             table.insert(keyboard, Keys.A)
         end
 
-        local ydir = movement.CompareTileHeight(Game1.player.Position, moveTile)
+        local ydir = yfunc(Game1.player.Position, moveTile)
         if ydir > 0 then
             table.insert(keyboard, Keys.S)
         elseif ydir < 0 then
             table.insert(keyboard, Keys.W)
         elseif next ~= nil then
-            local nydir = movement.CompareTileHeight(Game1.player.Position, next:toVector2())
+            local nydir = yfunc(Game1.player.Position, next:toVector2())
             if xdir > 0 then
                 if nydir > 0 then
                     local p = Step(Game1.player.Position, movement.DIR.DOWNRIGHT, speed)
-                    if movement.CompareTileHeight(p, moveTile) == 0 then
+                    if yfunc(p, moveTile) == 0 then
                         table.insert(keyboard, Keys.S)
                     end
                 elseif nydir < 0 then
                     local p = Step(Game1.player.Position, movement.DIR.UPRIGHT, speed)
-                    if movement.CompareTileHeight(p, moveTile) == 0 then
+                    if yfunc(p, moveTile) == 0 then
                         table.insert(keyboard, Keys.W)
                     end
                 end
             elseif xdir < 0 then
                 if nydir > 0 then
                     local p = Step(Game1.player.Position, movement.DIR.DOWNLEFT, speed)
-                    if movement.CompareTileHeight(p, moveTile) == 0 then
+                    if yfunc(p, moveTile) == 0 then
                         table.insert(keyboard, Keys.S)
                     end
                 elseif nydir < 0 then
                     local p = Step(Game1.player.Position, movement.DIR.UPLEFT, speed)
-                    if movement.CompareTileHeight(p, moveTile) == 0 then
+                    if yfunc(p, moveTile) == 0 then
                         table.insert(keyboard, Keys.W)
                     end
                 end
@@ -978,7 +998,7 @@ end
 function movement.OpenChest(tileX, tileY)
     local last_mouse = RunCS("Controller.LastFrameMouse()")
     local mouse = movement.GetMouseTileFromGlobal(tileX,tileY)
-    if last_mouse.MouseX == mouse.X and last_mouse.MouseY == mouse.Y then
+    if last_mouse.MouseX ~= mouse.X or last_mouse.MouseY ~= mouse.Y then
         advance({mouse=mouse})
     end
     mouse.right = true

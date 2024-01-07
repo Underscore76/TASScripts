@@ -15,18 +15,75 @@ local chests = {
     StoneChests={
         loc="Desert", 
         chests={
-            {loc="Desert", chestTile=Vector2(46,23), walkTile=Vector2(46,24)},
-            {loc="Desert", chestTile=Vector2(47,23), walkTile=Vector2(46,24)},
-            {loc="Desert", chestTile=Vector2(47,24), walkTile=Vector2(46,24)},
-            {loc="Desert", chestTile=Vector2(48,24), walkTile=Vector2(47,25)},
+            {loc="Desert", chestTile=Vector2(40,25), walkTile=Vector2(41,25)},
+            {loc="Desert", chestTile=Vector2(42,25), walkTile=Vector2(41,25)},
+            {loc="Desert", chestTile=Vector2(40,26), walkTile=Vector2(41,25)},
+            {loc="Desert", chestTile=Vector2(42,26), walkTile=Vector2(41,25)},
         }
     },
     SaplingChests={
         loc="Farm",
         chests={
+            -- bottom row, right to left
+            {loc="Farm", chestTile=Vector2(32,13), walkTile=Vector2(33,12)},
+            {loc="Farm", chestTile=Vector2(32,11), walkTile=Vector2(33,12)},
+            {loc="Farm", chestTile=Vector2(31,13), walkTile=Vector2(32,12)},
+            {loc="Farm", chestTile=Vector2(31,11), walkTile=Vector2(32,12)},
+            {loc="Farm", chestTile=Vector2(30,13), walkTile=Vector2(31,12)},
+            {loc="Farm", chestTile=Vector2(30,11), walkTile=Vector2(31,12)},
+            {loc="Farm", chestTile=Vector2(29,13), walkTile=Vector2(30,12)},
+            {loc="Farm", chestTile=Vector2(28,13), walkTile=Vector2(29,12)},
+            {loc="Farm", chestTile=Vector2(28,11), walkTile=Vector2(29,12)},
+            {loc="Farm", chestTile=Vector2(27,13), walkTile=Vector2(28,12)},
+            {loc="Farm", chestTile=Vector2(27,11), walkTile=Vector2(28,12)},
+            {loc="Farm", chestTile=Vector2(26,13), walkTile=Vector2(27,12)},
             {loc="Farm", chestTile=Vector2(26,11), walkTile=Vector2(27,12)},
-            {loc="Farm", chestTile=Vector2(27,11), walkTile=Vector2(27,12)},
-            {loc="Farm", chestTile=Vector2(28,11), walkTile=Vector2(28,12)}
+            {loc="Farm", chestTile=Vector2(25,13), walkTile=Vector2(26,12)},
+            {loc="Farm", chestTile=Vector2(25,11), walkTile=Vector2(26,12)},
+            {loc="Farm", chestTile=Vector2(24,13), walkTile=Vector2(25,12)},
+            {loc="Farm", chestTile=Vector2(24,11), walkTile=Vector2(25,12)},
+            {loc="Farm", chestTile=Vector2(23,13), walkTile=Vector2(24,12)},
+            {loc="Farm", chestTile=Vector2(23,11), walkTile=Vector2(24,12)},
+            {loc="Farm", chestTile=Vector2(22,13), walkTile=Vector2(23,12)},
+            {loc="Farm", chestTile=Vector2(22,11), walkTile=Vector2(23,12)},
+            -- left vertical wall
+            {loc="Farm", chestTile=Vector2(20,13), walkTile=Vector2(21,12)},
+            {loc="Farm", chestTile=Vector2(20,12), walkTile=Vector2(21,12)},
+            {loc="Farm", chestTile=Vector2(20,11), walkTile=Vector2(21,12)},
+            {loc="Farm", chestTile=Vector2(20,10), walkTile=Vector2(21,11)},
+            {loc="Farm", chestTile=Vector2(20,9), walkTile=Vector2(21,10)},
+            -- middle row left to right
+            {loc="Farm", chestTile=Vector2(22,10), walkTile=Vector2(23,9)},
+            {loc="Farm", chestTile=Vector2(23,10), walkTile=Vector2(23,9)},
+            {loc="Farm", chestTile=Vector2(23,8), walkTile=Vector2(23,9)},
+            {loc="Farm", chestTile=Vector2(24,10), walkTile=Vector2(24,9)},
+            {loc="Farm", chestTile=Vector2(24,8), walkTile=Vector2(24,9)},
+            {loc="Farm", chestTile=Vector2(25,10), walkTile=Vector2(25,9)},
+            {loc="Farm", chestTile=Vector2(25,8), walkTile=Vector2(25,9)},
+            {loc="Farm", chestTile=Vector2(26,10), walkTile=Vector2(26,9)},
+            {loc="Farm", chestTile=Vector2(26,8), walkTile=Vector2(26,9)},
+            {loc="Farm", chestTile=Vector2(27,10), walkTile=Vector2(27,9)},
+            {loc="Farm", chestTile=Vector2(27,8), walkTile=Vector2(27,9)},
+            {loc="Farm", chestTile=Vector2(28,10), walkTile=Vector2(28,9)},
+            {loc="Farm", chestTile=Vector2(28,8), walkTile=Vector2(28,9)},
+            {loc="Farm", chestTile=Vector2(30,10), walkTile=Vector2(30,9)},
+            {loc="Farm", chestTile=Vector2(30,8), walkTile=Vector2(30,9)},
+            {loc="Farm", chestTile=Vector2(31,10), walkTile=Vector2(31,9)},
+            {loc="Farm", chestTile=Vector2(32,10), walkTile=Vector2(32,9)},
+            -- top row right to left
+            {loc="Farm", chestTile=Vector2(28,7), walkTile=Vector2(29,6)},
+            {loc="Farm", chestTile=Vector2(28,5), walkTile=Vector2(29,6)},
+            {loc="Farm", chestTile=Vector2(27,7), walkTile=Vector2(28,6)},
+            {loc="Farm", chestTile=Vector2(27,5), walkTile=Vector2(28,6)},
+            {loc="Farm", chestTile=Vector2(26,7), walkTile=Vector2(27,6)},
+            {loc="Farm", chestTile=Vector2(26,5), walkTile=Vector2(27,6)},
+            {loc="Farm", chestTile=Vector2(25,7), walkTile=Vector2(26,6)},
+            {loc="Farm", chestTile=Vector2(25,5), walkTile=Vector2(26,6)},
+            {loc="Farm", chestTile=Vector2(24,7), walkTile=Vector2(25,6)},
+            {loc="Farm", chestTile=Vector2(24,5), walkTile=Vector2(25,6)},
+            {loc="Farm", chestTile=Vector2(23,7), walkTile=Vector2(24,6)},
+            {loc="Farm", chestTile=Vector2(23,5), walkTile=Vector2(24,6)},
+            {loc="Farm", chestTile=Vector2(22,5), walkTile=Vector2(23,6)},
         }
     }
 }
@@ -47,10 +104,11 @@ function pathing.GoToFarmHouse()
         movement.WalkToTile(Vector2(4,2))
         movement.AdvanceUntilLocationChange({Keys.W})
     elseif Game1.currentLocation.Name == "Farm" then
-        movement.WalkToTile(Vector2(64,15), function() 
-            return {override_keyboard=false, mouse=movement.GetMouseTileFromGlobal(64,14)} 
-        end)
-        movement.AdvanceUntilLocationChange(nil, {right=true}, true)
+        local frame_func = pathing.mouseTile(Vector2(64,14))
+        movement.WalkToTile(Vector2(64,15), frame_func)
+        local res = frame_func()
+        res.mouse.right = true
+        movement.AdvanceUntilLocationChange(nil, res.mouse, true)
     else
         pathing.GoToFarm()
         pathing.GoToFarmHouse()
@@ -135,15 +193,15 @@ function pathing.GoToSeedShop()
         if Game1.player:getTileLocation().X < 43 then
             local frame_func = pathing.mouseTile(Vector2(43,56))
             movement.WalkToTile(Vector2(43,57), frame_func)
-            local mouse = frame_func()
-            mouse.right = true
-            movement.AdvanceUntilLocationChange(nil, mouse, true)
+            local res = frame_func()
+            res.mouse.right = true
+            movement.AdvanceUntilLocationChange(nil, res.mouse, true)
         else
             local frame_func = pathing.mouseTile(Vector2(44,56))
             movement.WalkToTile(Vector2(44,57), frame_func)
-            local mouse = frame_func()
-            mouse.right = true
-            movement.AdvanceUntilLocationChange(nil, mouse, true)
+            local res = frame_func()
+            res.mouse.right = true
+            movement.AdvanceUntilLocationChange(nil, res.mouse, true)
         end
     else
         pathing.GoToTown()
@@ -155,9 +213,9 @@ function pathing.OpenSeedShopStore()
     pathing.GoToSeedShop()
     local frame_func = pathing.mouseTile(Vector2(5,18))
     movement.WalkToTile(Vector2(6,19), frame_func)
-    local mouse = frame_func()
-    mouse.right = true
-    movement.AdvanceUntilMenu(nil, mouse, true)
+    local res = frame_func()
+    res.mouse.right = true
+    movement.AdvanceUntilMenu(nil, res.mouse, true)
 end
 
 function pathing.SellSaplings()
@@ -184,9 +242,9 @@ function pathing.GoToGreenhouse()
     elseif Game1.currentLocation.Name == "Farm" then
         local frame_func = pathing.mouseTile(Vector2(55,16))
         movement.WalkToTile(Vector2(55,17), frame_func)
-        local mouse = frame_func()
-        mouse.right = true
-        movement.AdvanceUntilLocationChange(nil, mouse, true)
+        local res = frame_func()
+        res.mouse.right = true
+        movement.AdvanceUntilLocationChange(nil, res.mouse, true)
     else
         pathing.GoToFarm()
         pathing.GoToGreenhouse()
@@ -225,9 +283,9 @@ function pathing.OpenOasisStore()
     pathing.GoToOasis()
     local frame_func = pathing.mouseTile(Vector2(2,7)) 
     movement.WalkToTile(Vector2(3,7), frame_func)
-    local mouse = frame_func()
-    mouse.right = true
-    movement.AdvanceUntilMenu(nil, mouse, true)
+    local res = frame_func()
+    res.mouse.right = true
+    movement.AdvanceUntilMenu(nil, res.mouse, true)
 end
 
 function pathing.GoToDesert()
@@ -244,9 +302,9 @@ function pathing.GoToDesert()
         pathing.GoToFarm()
         local frame_func = pathing.mouseTile(Vector2(49,12)) 
         movement.WalkToTile(Vector2(48,12), frame_func)
-        local mouse = frame_func()
-        mouse.right = true
-        movement.AdvanceUntilLocationChange(nil, mouse, true)
+        local res = frame_func()
+        res.mouse.right = true
+        movement.AdvanceUntilLocationChange(nil, res.mouse, true)
     end
 end
 
@@ -261,9 +319,10 @@ function pathing.OpenDesertTrader()
     pathing.GoToDesert()
     local frame_func = pathing.mouseTile(Vector2(41,24)) 
     movement.WalkToTile(Vector2(41,25), frame_func)
-    local mouse = frame_func()
-    mouse.right = true
-    movement.AdvanceUntilMenu(nil, mouse, true)
+    local res = frame_func()
+    advance({mouse=res.mouse})
+    res.mouse.right = true
+    movement.AdvanceUntilMenu(nil, res.mouse, true)
 end
 
 function pathing.GoToCasino()
@@ -288,9 +347,9 @@ function pathing.OpenCasinoStore()
     pathing.GoToCasino()
     local frame_func = pathing.mouseTile(Vector2(25,3)) 
     movement.WalkToTile(Vector2(24,4), frame_func)
-    local mouse = frame_func()
-    mouse.right = true
-    movement.AdvanceUntilMenu(nil, mouse, true)
+    local res = frame_func()
+    res.mouse.right = true
+    movement.AdvanceUntilMenu(nil, res.mouse, true)
 end
 
 function pathing.OpenHighRollerCalicoJack()
@@ -298,9 +357,9 @@ function pathing.OpenHighRollerCalicoJack()
     pathing.GoToCasino()
     local frame_func = pathing.mouseTile(Vector2(23,10)) 
     movement.WalkToTile(Vector2(22,9), frame_func)
-    local mouse = frame_func()
-    mouse.right = true
-    movement.AdvanceUntilMenu(nil, mouse, true)
+    local res = frame_func()
+    res.mouse.right = true
+    movement.AdvanceUntilMenu(nil, res.mouse, true)
 end
 
 function pathing.OpenCalicoSpin()
@@ -311,9 +370,9 @@ function pathing.OpenCalicoSpin()
     pathing.GoToCasino()
     local frame_func = pathing.mouseTile(Vector2(11,8))
     movement.WalkToTile(Vector2(11,9), frame_func)
-    local mouse = frame_func()
-    mouse.right = true
-    movement.AdvanceUntilMinigame(nil, mouse, true)
+    local res = frame_func()
+    res.mouse.right = true
+    movement.AdvanceUntilMinigame(nil, res.mouse, true)
 end
 
 function pathing.CloseCalicoSpin()
@@ -346,9 +405,9 @@ function pathing.GoToIslandSouth()
             frame_func = pathing.mouseTile(Vector2(50,16))
         end
         movement.WalkToTile(walkTile, frame_func)
-        local mouse = frame_func()
-        mouse.right = true
-        movement.AdvanceUntilLocationChange(nil, mouse, true)
+        local res = frame_func()
+        res.mouse.right = true
+        movement.AdvanceUntilLocationChange(nil, res.mouse, true)
     end
 end
 
@@ -374,6 +433,11 @@ function pathing.mouseTile(tile)
 end
 
 function pathing.CountChest(locationName, chestTile, itemName)
+    -- local d = interface:CountChest(locationName, chestTile)
+    -- if d:ContainsKey(itemName) then
+    --     return d[itemName]
+    -- end
+    -- return 0
     local loc = Game1.getLocationFromName(locationName)
     local chest = loc.Objects[Vector2(chestTile.X, chestTile.Y)]
     local count = 0
@@ -386,6 +450,11 @@ function pathing.CountChest(locationName, chestTile, itemName)
 end
 
 function pathing.CountInventory(itemName)
+    -- local d = interface:CountInventory()
+    -- if d:ContainsKey(itemName) then
+    --     return d[itemName]
+    -- end
+    -- return 0
     local count = 0
     for _,v in list_items(Game1.player.items) do
         if v ~= nil and v.Name == itemName then
@@ -396,60 +465,30 @@ function pathing.CountInventory(itemName)
 end
 
 function pathing.CountMachines(locName, objName)
-    local loc = Game1.getLocationFromName(locName)
-    local count = 0
-    for k,v in dict_items(loc.Objects) do
-        if v.Name == objName then
-            count = count + 1
-        end
-    end
-    return count
+    local state = interface:GetMachineState(locName, objName)
+    return state.NumMachine
+    -- local loc = Game1.getLocationFromName(locName)
+    -- local count = 0
+    -- for k,v in dict_items(loc.Objects) do
+    --     if v.Name == objName then
+    --         count = count + 1
+    --     end
+    -- end
+    -- return count
 end
 
-function pathing.CountMachinesActive(locName, objName)
-    local loc = Game1.getLocationFromName(locName)
-    local count = 0
-    for k,v in dict_items(loc.Objects) do
-        if v.Name == objName then
-            if v.readyForHarvest.Value then
-                count = count + 1
-            end
-        end
-    end
-    return count
 
-end
-
-function pathing.CountMachinesDone(locName, objName, heldObject)
-    local loc = Game1.getLocationFromName(locName)
-    local count = 0
-    for k,v in dict_items(loc.Objects) do
-        if v.Name == objName then
-            if v.heldObject.Value == nil then
-                count = count + 1
-            elseif v.readyForHarvest.Value then
-                if heldObject == nil or v.heldObject.Value.Name == heldObject then
-                    count = count + 1
-                end
-            end
-        end
-    end
-    return count
+function pathing.CountMachinesDone(locName, objName)
+    local state = interface:GetMachineState(locName, objName)
+    return state.NumMachineDone
 end
 
 function pathing.CountMachineDoneItems(locName, objName, heldObject)
-    local loc = Game1.getLocationFromName(locName)
-    local count = 0
-    for k,v in dict_items(loc.Objects) do
-        if v.Name == objName then
-            if v.readyForHarvest.Value then
-                if heldObject ~= nil and v.heldObject.Value.Name == heldObject then
-                    count = count + v.heldObject.Value.Stack
-                end
-            end
-        end
+    local state = interface:GetMachineState(locName, objName)
+    if state.ItemCounts:ContainsKey(heldObject) then
+        return state.ItemCounts[heldObject]
     end
-    return count
+    return 0
 end
 
 function pathing.BuyItem(itemName, toBuy, maxItems)
@@ -459,8 +498,9 @@ function pathing.BuyItem(itemName, toBuy, maxItems)
         end
         return Game1.activeClickableMenu.heldItem.Stack
     end
-    local count = pathing.CountInventory(itemName)
+    local count = 0
     if maxItems ~= nil then 
+        count = pathing.CountInventory(itemName)
         toBuy = math.max(0, maxItems - count)
     end
     if toBuy <= 0 then
@@ -656,6 +696,7 @@ end
 
 function pathing.DumpToChest(walkTile, chestTile, itemName)
     movement.WalkToTile(walkTile, pathing.mouseTile(chestTile))
+    advance({mouse=movement.GetMouseTileFromGlobal(chestTile.X,chestTile.Y)})
     movement.OpenChest(chestTile.X, chestTile.Y)
     if itemName ~= nil then
         local mouse,_ = movement.GetChestInventoryMouse(itemName)
@@ -682,6 +723,7 @@ function pathing.DumpToChests(chests, itemName)
             pathing.DumpToChest(chest.walkTile, chest.chestTile, itemName)
         elseif count == 0 then
             movement.WalkToTile(chest.walkTile, frame_func)
+            advance({mouse=frame_func().mouse})
             movement.OpenChest(chest.chestTile.X, chest.chestTile.Y)
             while pathing.CountInventory(itemName) > 0 do
                 local mouse,_ = movement.GetChestInventoryMouse(itemName)
@@ -747,18 +789,21 @@ function pathing.DumpSeeds(seedName)
     local function safety()
         return pathing.CountChest("Farm", chests.SafetySeedChest.chestTile, seedName) < pathing.safetySeedCount
     end
+    local function inventory()
+        return pathing.CountInventory(seedName) > 0
+    end
     pathing.GoToFarm()
     if safety() then
         movement.WalkToTile(chests.SafetySeedChest.walkTile, pathing.mouseTile(chests.SafetySeedChest.chestTile))
         movement.OpenChest(chests.SafetySeedChest.chestTile.X, chests.SafetySeedChest.chestTile.Y)
-        while safety() do
+        while safety() and inventory() do
             local mouse,_ = movement.GetChestInventoryMouse(seedName)
             advance({mouse=mouse})
             advance()
         end
         advance({keyboard={Keys.E}})
     end
-    if pathing.CountInventory(seedName) > 0 then
+    if inventory() then
         movement.WalkToTile(chests.SeedChest.walkTile, pathing.mouseTile(chests.SeedChest.chestTile))
         movement.OpenChest(chests.SeedChest.chestTile.X, chests.SeedChest.chestTile.Y)
         while pathing.CountInventory(seedName) > 0 do
@@ -874,30 +919,22 @@ function pathing.MakeAll(submenu, craftingName)
 end
 
 function pathing.test()
-    local seasonalForage = {
-        "Daffodil",
-        "Dandelion",
-        "Leek",
-        "Wild Horseradish",
-        "Sweet Pea",
-        "Spice Berry",
-        "Grape",
-        "Wild Plum",
-        "Hazelnut",
-        "Blackberry",
-        "Common Mushroom",
-        "Winter Root",
-        "Crystal Fruit",
-        "Snow Yam",
-        "Crocus",
-    }
-    for _, v in ipairs(seasonalForage) do
-        while pathing.CountInventory(v) > 0 do
-            local mouse,_ = movement.GetChestInventoryMouse(v)
-            advance({mouse=mouse})
-            advance()
+    local t0 = os.clock()
+    for i=1,10 do
+        pathing.CountInventory("Staircase")
+    end
+    local t1 = os.clock()
+    print(string.format("elapsed time: %f", t1 - t0))
+    t0 = os.clock()
+    local c = 0
+    for i=1,10 do
+        local inv = interface:CountInventory()
+        if inv:ContainsKey("Staircase") then
+            c = c + inv["Staircase"]
         end
     end
+    t1 = os.clock()
+    print(string.format("elapsed time: %f", t1 - t0))
 end
 
 return pathing

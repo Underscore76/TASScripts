@@ -2,29 +2,29 @@ local overlays = require("overlays")
 local movement = require("movement")
 local pathing = require("pathing")
 local slots = require("slots")
+local gen_state = require("chorestate")
 
 local chores = {
     minQiCoins = 1000000,
     minStone = 999*100,
-    minFiber = 999*32,
+    minFiber = 999*24,
     minWood = 999*32,
     minHardwood = 999*3,
     minFences = 2000,
     fenceBuy = 999*4,
-    minSpeedgro = 600,
+    speedgroMin = 600,
 }
 
-function chores.FlipWoodchippers()
+function chores.FlipWoodchippers(numChipper)
     overlays.text_panel.set("Chore: Chip Hardwood")
-    local numChippers = pathing.CountMachines("Cellar", "Wood Chipper")
     local item = "Hardwood"
     pathing.GoToCellar()
-    if not pathing.HaveItems(item, numChippers) then
+    if not pathing.HaveItems(item, numChipper) then
         -- print('need to get hardwood')
         pathing.CollectFromChest(
             pathing.chests.HardwoodChest.walkTile, 
             pathing.chests.HardwoodChest.chestTile, 
-            item, numChippers)
+            item, numChipper)
     end
     advance()
     
@@ -277,46 +277,79 @@ function chores.HarvestGreenhouse()
 end
 
 function chores.ScytheGrass()
+    local function swing(grassTile, standTile, swingTile, delay)
+        if Game1.currentLocation.Objects:ContainsKey(grassTile) then
+            return false
+        end
+        Controller.pathFinder:Update(standTile.X, standTile.Y, false)
+        if not Controller.pathFinder.hasPath then
+            return false
+        end
+        movement.WalkToTile(standTile, nil, true)
+        local mouse = movement.GetMouseTileFromGlobal(swingTile.X, swingTile.Y)
+        for _=1,2 do 
+            mouse.left = false
+            advance({mouse=mouse})
+            mouse.left = true
+            for i=1,delay do
+                advance({mouse=mouse})
+            end
+            advance({keyboard={Keys.RightShift, Keys.R, Keys.Delete}})
+        end
+        return true
+    end
     overlays.text_panel.set("Chore: Scythe Grass")
     pathing.GoToFarm()
     movement.SwapToItem("Infinity Blade")
-    local loc = CurrentLocation.NearestGrass()
-    while loc ~= Vector2.Zero do
-
-        local tile = Vector2(loc.X+1, loc.Y+1)
-        if not Game1.currentLocation.Objects:ContainsKey(tile) then
-            Controller.pathFinder:Update(tile.X, tile.Y, false)
-            if Controller.pathFinder.hasPath then
-                movement.WalkToTile(tile)
-                local mouse = movement.GetMouseTileFromGlobal(loc.X+1, loc.Y)
-                for i=0,1 do
-                    advance({mouse=mouse})
-                    mouse.left=true
-                    advance({mouse=mouse})
-                    advance({keyboard={Keys.RightShift, Keys.R, Keys.Delete}})
-                end
-                goto continue
-            end
+    local grassTile = CurrentLocation.NearestGrass()
+    while grassTile ~= Vector2.Zero do
+        -- go bottom right and swing left (box is up-left)
+        local standTile = Vector2(grassTile.X+1, grassTile.Y+1)
+        local swingTile = Vector2(grassTile.X+1, grassTile.Y)
+        if swing(grassTile, standTile, swingTile, 1) then
+            goto continue
         end
         
-        tile = Vector2(loc.X-1, loc.Y+1)
-        if not Game1.currentLocation.Objects:ContainsKey(tile) then     
-            Controller.pathFinder:Update(tile.X, tile.Y, false)
-            if Controller.pathFinder.hasPath then
-                movement.WalkToTile(tile)
-                local mouse = movement.GetMouseTileFromGlobal(loc.X, loc.Y+1)
-                for i=0,1 do
-                    advance({mouse=mouse})
-                    mouse.left=true
-                    advance({mouse=mouse})
-                    advance({keyboard={Keys.RightShift, Keys.R, Keys.Delete}})
-                end
-                goto continue
-            end
+        -- go bottom left and swing right (box is up-right)
+        standTile = Vector2(grassTile.X-1, grassTile.Y+1)
+        swingTile = Vector2(grassTile.X, grassTile.Y+1)
+        if swing(grassTile, standTile, swingTile, 1) then
+            goto continue
         end
 
+        -- go below and swing left (box is up)
+        standTile = Vector2(grassTile.X, grassTile.Y+1)
+        swingTile = Vector2(grassTile.X-1, grassTile.Y+1)
+        if swing(grassTile, standTile, swingTile, 1) then
+            goto continue
+        end
+
+        -- go left and swing down (box is right)
+        standTile = Vector2(grassTile.X-1, grassTile.Y)
+        swingTile = Vector2(grassTile.X, grassTile.Y+1)
+        if swing(grassTile, standTile, swingTile, 1) then
+            goto continue
+        end
+
+        -- go above and swing down (box is right but will swing down)
+        standTile = Vector2(grassTile.X, grassTile.Y-1)
+        swingTile = Vector2(grassTile.X, grassTile.Y)
+        if swing(grassTile, standTile, swingTile, 5) then
+            goto continue
+        end
+
+        -- go right and swing left (box is up but will swing down)
+        standTile = Vector2(grassTile.X+1, grassTile.Y)
+        swingTile = Vector2(grassTile.X+1, grassTile.Y-1)
+        if swing(grassTile, standTile, swingTile, 6) then
+            goto continue
+        end
+
+        break
+        --- not sure why my editor is complaining here
+        ---@diagnostic disable-next-line: code-after-break
         ::continue::
-        loc = CurrentLocation.NearestGrass()
+        grassTile = CurrentLocation.NearestGrass()
     end
     overlays.text_panel.clear()
 end
@@ -436,19 +469,30 @@ function chores.HarvestFarm()
     overlays.text_panel.clear()
 end
 
-function chores.ConsumeFood()
-    overlays.text_panel.set("Chore: Consume Food")
+function chores.EatSpicyEel()
+    overlays.text_panel.set("Chore: Eat Food")
+    pathing.EscapeMenu()
     if pathing.CountInventory("Spicy Eel") > 1 then
         movement.SwapToItem("Spicy Eel")
-        advance()
+        local p = Game1.player:getTileLocation()
+        advance({keyboard={Keys.S}, mouse=movement.GetMouseTileFromGlobal(p.X, p.Y)})
         advance({keyboard={Keys.X}})
         advance({keyboard={Keys.Y}})
         while not Game1.player.CanMove do
             advance()
         end
     end
+    movement.SwapToItem("Infinity Blade")
+    overlays.text_panel.clear()
+end
+
+function chores.DrinkTripleShotEspresso()
+    overlays.text_panel.set("Chore: Drink Coffee")
+    pathing.EscapeMenu()
     if pathing.CountInventory("Triple Shot Espresso") > 1 then
         movement.SwapToItem("Triple Shot Espresso")
+        local p = Game1.player:getTileLocation()
+        advance({mouse=movement.GetMouseTileFromGlobal(p.X, p.Y)})
         advance()
         advance({keyboard={Keys.X}})
         advance({keyboard={Keys.Y}})
@@ -464,14 +508,18 @@ function chores.TurnInJades()
     overlays.text_panel.set("Chore: Trade Jades")
     pathing.OpenDesertTrader()
     local nJades = pathing.CountInventory("Jade")
+    local nRuby = pathing.CountInventory("Ruby")
+    local nDiamond = pathing.CountInventory("Diamond")
+    -- print('jades: '..nJades)
+    -- print('rubies: '..nRuby)
+    -- print('diamonds: '..nDiamond)
     if nJades > 1 then
         pathing.BuyItem("Staircase", nJades-1)
     end
-    local nRuby = pathing.CountInventory("Ruby")
+
     if nRuby > 1 then
         pathing.BuyItem("Spicy Eel", nRuby-1)
     end
-    local nDiamond = pathing.CountInventory("Diamond")
     if nDiamond > 1 then
         pathing.BuyItem("Triple Shot Espresso", nDiamond-1)
     end
@@ -586,8 +634,8 @@ function chores.CraftSaplings()
     overlays.text_panel.clear()
 end
 
-function chores.TradeFiber()
-    local n = pathing.CountMachineDoneItems("FarmHouse", "Deconstructor", "Stone")
+function chores.TradeFiber(state)
+    local n = state.DeconItem("Stone")
     if n > 0 then
         -- go clear the decons
         chores.DeconStairs()
@@ -666,39 +714,8 @@ function chores.BackfillSpeedgro(numHave)
 end
 
 function chores.state()
-    local nDecons = pathing.CountMachines("FarmHouse", "Deconstructor")
-    local function saplingCount()
-        local count = 0
-        for i,v in ipairs(pathing.chests.SaplingChests.chests) do
-            count = count + pathing.CountChest("Farm", v.chestTile, "Tea Sapling")
-        end
-        return count
-    end
-    local function woodCount()
-        return pathing.CountChest("Farm", pathing.chests.WoodChest.chestTile, "Wood")
-    end
-    local function hardwoodCount()
-        return (
-            pathing.CountChest("Cellar", pathing.chests.HardwoodChest.chestTile, "Hardwood")
-            + pathing.CountInventory("Hardwood")
-        )
-    end
-    local function fenceCount()
-        return pathing.CountChest("FarmHouse", pathing.chests.FenceChest.chestTile, "Hardwood Fence")
-    end
-    local function stoneCount()
-        local count = 0
-        for i,v in ipairs(pathing.chests.StoneChests.chests) do
-            count = count + pathing.CountChest("Desert", v.chestTile, "Stone")
-        end
-        return count
-    end
-    local function fiberCount()
-        return pathing.CountChest("Farm", pathing.chests.FiberChest.chestTile, "Fiber")
-    end
-    local function staircaseCount()
-        return pathing.CountInventory("Staircase")
-    end
+    -- local t0 = os.clock()
+    local state = gen_state()
     local function itsLATE()
         return (
             Game1.timeOfDay >= 2420
@@ -719,56 +736,30 @@ function chores.state()
         end
         return x
     end
-    local function speedgroCount()
-        local corner = Vector2(98,46)
-        local minVal, sum = -1,0
-        local loc = Game1.getLocationFromName("IslandWest")
-        for i = 0,5 do
-            for j=0,3 do
-                local tile = Vector2(corner.X - 5 * i, corner.Y + 5 * j)
-                if loc.Objects:ContainsKey(tile) then
-                    local enricher = loc.Objects[tile].heldObject.Value.heldObject.Value
-                    if enricher.items.Count > 0 then
-                        local count = enricher.items[0].Stack
-                        sum = sum + count
-                        if minVal == -1 or count < minVal then
-                            minVal = count
-                        end
-                    end
-                end
-            end
-        end
-        return minVal, sum
-    end
-    local function needsFood()
-        local food = Game1.onScreenMenus[2].food
-        local drink = Game1.onScreenMenus[2].drink
-        return (food == nil or drink == nil) and Game1.timeOfDay < 800
-    end
     local function tradeJades()
         local isNightMarket = Game1.currentSeason == "winter" and Game1.dayOfMonth == 16
         if isNightMarket then
             return false
         end
         return (
-            pathing.CountInventory("Jade") > 100 
+            state.numJade > 100 
             and Game1.dayOfMonth % 7 == 0
-            and stoneCount() < chores.minStone
+            and state.stoneCount < chores.minStone
         )
     end
     local function hasStaircases()
-        if stoneCount() > chores.minStone then
+        if state.stoneCount > chores.minStone then
             return false
         end
         return (
             (
-                pathing.CountInventory("Staircase") > 1
-                or pathing.CountMachineDoneItems("FarmHouse","Deconstructor","Stone") > 0
+                state.staircaseCount > 1
+                or state.DeconItem("Stone") > 0
             )
         )
     end
     local function tradeFiber()
-        if fiberCount() > chores.minFiber then
+        if state.fiberCount > chores.minFiber then
             return false
         end
         local isNightMarket = Game1.currentSeason == "winter" and Game1.dayOfMonth == 16
@@ -778,18 +769,18 @@ function chores.state()
         return (
             not hasStaircases() 
             and Game1.dayOfMonth % 7 == 2
-            and stoneCount() > 0
+            and state.stoneCount > 0
         )
     end
     local function deconstructStaircase()
-        if stoneCount() > chores.minStone then
+        if state.stoneCount > chores.minStone then
             return false
         end
         return (
-            pathing.CountMachinesDone("FarmHouse", "Deconstructor") >= nDecons-1
+            state.deconState.NumMachineDone >= state.numDecons-1    
             and (
                 hasStaircases()
-                or pathing.CountMachineDoneItems("FarmHouse","Deconstructor","Stone") > 0
+                or state.DeconItem("Stone") > 0
             )
         )
     end 
@@ -798,26 +789,21 @@ function chores.state()
         local n = Game1.getLocationFromName("Cellar").Objects[Vector2(3,6)].minutesUntilReady.Value
         return addTime(t,n)
     end
-    local function deconTime()
-        local t = Game1.timeOfDay
-        local n = Game1.getLocationFromName("FarmHouse").Objects[Vector2(29,23)].minutesUntilReady.Value
-        return addTime(t,n)
-    end
     local function needWood()
-        return (woodCount() < chores.minWood and chipperTime() < 1800)
+        return (state.woodCount < chores.minWood and chipperTime() < 1800)
     end
     local function deconstructFences()
         return (
-            pathing.CountMachinesDone("FarmHouse", "Deconstructor") >= nDecons-1
-            and pathing.CountChest("FarmHouse", pathing.chests.FenceChest.chestTile, "Hardwood Fence") > 100
-            and hardwoodCount() < chores.minHardwood
+            state.deconState.NumMachineDone >= state.numDecons-1
+            and state.fenceCount > 100
+            and state.hardwoodCount < chores.minHardwood
         )
     end
     local function woodchippers()
         return (
             needWood()
-            and hardwoodCount() > 150
-            and pathing.CountMachinesDone("Cellar", "Wood Chipper") > 100
+            and state.hardwoodCount > 150
+            and state.chipperState.NumMachineDone > 100
             and chipperTime() < 1800
         )
     end
@@ -866,30 +852,35 @@ function chores.state()
     end
     local function flipJades()
         return (
-            pathing.CountMachinesDone("FarmHouse", "Crystalarium", "Jade") > 100 
-            and stoneCount() < chores.minStone
+            state.lariumState.NumMachineDone > 100 
+            and state.stoneCount < chores.minStone
     )
-    end
-    local function casinoOpen()
-        return Game1.timeOfDay >= 900 and Game1.timeOfDay < 2350
     end
     local function buyFences()
         return (
-            fenceCount() < chores.minFences 
-            and casinoOpen() 
+            state.fenceCount < chores.minFences 
+            and state.casinoOpen 
             and Game1.currentLocation.Name == "Desert" 
             and Game1.timeOfDay < 1800
     )
     end
     
     local function shouldBackfillSpeedgro()
-        local minVal, _ = speedgroCount()
         return (
-            minVal < chores.minSpeedgro 
+            state.speedgroMin < chores.speedgroMin 
             and Game1.dayOfMonth % 7 == 4 
             and not Game1.isFestival() 
             and not harvestIsland() 
-            and casinoOpen()
+            and state.casinoOpen
+        )
+    end
+
+    local function shouldCraftSaplings()
+        local chest = Game1.getLocationFromName("Farm").Objects[pathing.chests.SeedChest.chestTile]
+        return (
+            state.fiberCount >= chores.minFiber
+            and state.woodCount >= chores.minWood
+            and chest.items.Count > 1
         )
     end
     local val = {
@@ -907,32 +898,22 @@ function chores.state()
         hasStaircases = hasStaircases(),
         needWood = needWood(),
         backfillSpeedgro = shouldBackfillSpeedgro(),
+        shouldCraftSaplings = shouldCraftSaplings(),
     }
-    local any = false
-    for k,v in pairs(val) do
-        any = any or v
-    end
+    local any = (
+        val.flipJades or val.tradeJades or val.tradeFiber or val.deconStair or val.deconFence or val.chippers or val.island or val.greenhouse or val.farm or val.fences or val.goToBed or val.hasStaircases or val.needWood or val.backfillSpeedgro or val.shouldCraftSaplings
+    )
     val["any"] = any
-    -- non-blocking results
-    val.needsFood = needsFood()
-    
-    val.staircaseCount = staircaseCount()
-    val.stoneCount = stoneCount()
-    val.fiberCount = fiberCount()
-    val.woodCount = woodCount()
-    val.hardwoodCount = hardwoodCount()
-    val.fenceCount = fenceCount()
-    val.chipTime = chipperTime()
-    val.deconTime = deconTime()
-    val.saplingCount = saplingCount()
-    val.speedgroMin, val.speedgroSum = speedgroCount()
+    val.state = state
+    -- local t1 = os.clock()
+    -- print('lag frames: '..(t1-t0)/(1.0/60))
     return val
 end
 
 function chores.Run()
     Game1.options.pinToolbarToggle = true -- probably should just do this in the savefile
     local val = chores.state()
-    chores.Overlay(val)
+    chores.Overlay(val.state)
     Controller.Console:Close()
     ::start::
     if not val["any"] then
@@ -945,8 +926,16 @@ function chores.Run()
             chores.GoToBed()
             goto continue
         end
-        if val.needsFood then
-            chores.ConsumeFood()
+        if val.state.needFoodBuff then
+            chores.EatSpicyEel()
+        end
+        if val.state.needDrinkBuff then
+            chores.DrinkTripleShotEspresso()
+        end
+        
+        if val.shouldCraftSaplings then
+            chores.CraftSaplings()
+            goto continue
         end
 
         if val.fences then
@@ -965,7 +954,7 @@ function chores.Run()
             goto continue
         end
         if val.tradeFiber then
-            chores.TradeFiber()
+            chores.TradeFiber(val.state)
             goto continue
         end
         if val.deconFence then
@@ -974,7 +963,7 @@ function chores.Run()
         end
 
         if val.chippers then
-            chores.FlipWoodchippers()
+            chores.FlipWoodchippers(val.state.numChipper)
             goto continue
         end
         if val.greenhouse then
@@ -986,7 +975,7 @@ function chores.Run()
             goto continue
         end
         if val.backfillSpeedgro then
-            chores.BackfillSpeedgro(val.speedgroSum)
+            chores.BackfillSpeedgro(val.state.speedgroSum)
             goto continue
         end
         if val.farm then
@@ -1003,7 +992,7 @@ function chores.Run()
         end
         ::continue::
         val = chores.state()
-        chores.Overlay(val)
+        chores.Overlay(val.state)
         if not val["any"] then
             chores.GoToBed()
             val = chores.state()
@@ -1013,42 +1002,6 @@ function chores.Run()
     Controller.Console:Open()
 end
 
--- function chores.Test()
---     local n = pathing.CountMachineDoneItems("FarmHouse", "Deconstructor", "Stone")
---     if n > 0 then
---         -- go clear the decons
---         chores.DeconStairs()
---     end
-    
---     local startChest = nil
---     for i,v in ipairs(pathing.chests.StoneChests.chests) do
---         if startChest == nil then
---             startChest = v
---         end
---         print(v)
---         while pathing.CountChest("Desert", v.chestTile, "Stone") > 0 do
---             pathing.GoToDesert()
---             pathing.PullFromChest(v.walkTile, v.chestTile, "Stone", 1)
---             pathing.OpenDesertTrader()
---             local count = pathing.CountInventory("Stone")
---             if count > 0 then
---                 pathing.BuyItem("Fiber", count//5)
---             end
---             advance({keyboard={Keys.Escape}})
---             pathing.DumpToChest(startChest.walkTile, startChest.chestTile, "Fiber")
---             chores.Overlay()
---         end
---     end
---     while pathing.CountChest("Desert", startChest.chestTile, "Fiber") > 0 do
---         pathing.GoToDesert()
---         pathing.PullFromChest(startChest.walkTile, startChest.chestTile, "Fiber", 1)
---         pathing.GoToFarm()
---         pathing.DumpToChest(pathing.chests.FiberChest.walkTile, pathing.chests.FiberChest.chestTile, "Fiber")
---         chores.Overlay()
---     end
---     pathing.GoToFarm()
---     chores.CraftSaplings()
--- end
 
 function chores.Play()
     breset(300)
@@ -1057,7 +1010,7 @@ end
 -- frame 161816
 function chores.Overlay(val)
     if val == nil then
-        val = chores.state()
+        val = gen_state()
     end
     Controller.Overlays["ItemCounters"]:Update(251, val.saplingCount)
     Controller.Overlays["ItemCounters"]:Update(771, val.fiberCount)
@@ -1068,7 +1021,13 @@ function chores.Overlay(val)
 end
 
 function chores.Test()
-    
+    local n = 100
+    local t0 = os.clock()
+    for i=1,n do
+        chores.state()
+    end
+    local t1 = os.clock()
+    print('lag frames: '..(t1-t0)/(1.0/60)/n)
 end
 
 return chores
